@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:movie_db/src/core/configuration/dependency_injection/get_it_configuration.dart';
+import 'package:movie_db/src/presentation/home/home_screen.dart';
 
 void main() {
-  runApp(const MainApp());
+  getItConfiguration();
+  runApp(MyApp());
 }
 
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
-
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
+      home: HomeScreen(),
     );
   }
 }

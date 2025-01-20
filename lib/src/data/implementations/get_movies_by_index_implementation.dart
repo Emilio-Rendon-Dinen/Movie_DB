@@ -9,10 +9,9 @@ class GetMoviesByIndexImplementation implements GetMoviesByIndexRepository {
   const GetMoviesByIndexImplementation({required ApiService apiServices}) : _apiService = apiServices;
 
   @override
-  Future<List<Movie>> getMovies(int id) async {
+  Future<List<Movie>> getMovies(int index) async {
     try {
-      var json = await _apiService.get('$id', null);
-      // Ahora puedes parsear la lista de películas
+      var json = await _apiService.get('$index', null);
       final List<Movie> data = MovieModel.parseToList(json);
       return Future.value(data);
     } catch (e) {
