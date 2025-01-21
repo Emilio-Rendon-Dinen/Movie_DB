@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie_db/src/domain/entities/movie.dart';
+import 'package:movie_db/src/presentation/home/bloc/get_movies_bloc.dart';
 import 'package:movie_db/src/presentation/home/widgets/movie_poster_widget.dart';
 
 class MovieListWidget extends StatefulWidget {
   final List<Movie> movieList;
-  final bool isLoading;
+  final bool isLoadingMore;
   final Function onLoadMore;
 
   const MovieListWidget({
     required this.movieList,
-    required this.isLoading,
+    required this.isLoadingMore,
     required this.onLoadMore,
     super.key,
   });
@@ -18,7 +20,8 @@ class MovieListWidget extends StatefulWidget {
   State<MovieListWidget> createState() => _MovieListWidgetState();
 }
 
-class _MovieListWidgetState extends State<MovieListWidget> {
+//Mixin necesario para mantener el estado del scroll
+class _MovieListWidgetState extends State<MovieListWidget> with AutomaticKeepAliveClientMixin {
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -33,8 +36,10 @@ class _MovieListWidgetState extends State<MovieListWidget> {
     super.dispose();
   }
 
+  @override
+  bool get wantKeepAlive => true; //Necesario para mantener el estado del scroll
   void _onScroll() {
-    if (_isBottom && !widget.isLoading) {
+    if (_isBottom && !widget.isLoadingMore) {
       widget.onLoadMore();
     }
   }
@@ -43,40 +48,54 @@ class _MovieListWidgetState extends State<MovieListWidget> {
     if (!_scrollController.hasClients) return false;
     final maxScroll = _scrollController.position.maxScrollExtent;
     final currentScroll = _scrollController.offset;
-    return currentScroll >= (maxScroll * 0.7);
+    return currentScroll >= (maxScroll * 0.9);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: GridView.builder(
-            controller: _scrollController,
-            physics: const ClampingScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisSpacing: 8.0,
-              crossAxisSpacing: 8.0,
+    super.build(context); //Necesario para mantener el estado del scroll
+    return BlocBuilder<GetMoviesBloc, GetMoviesState>(
+      builder: (context, state) {
+        if (state is GetMoviesInitial) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (state is GetMoviesError && state.movies.isEmpty) {
+          return Center(child: Text('Error: ${state.error}'));
+        }
+
+        return Column(
+          children: [
+            Expanded(
+              child: GridView.builder(
+                key: const PageStorageKey('movieGrid'), //Necesario para mantener el estado del scroll
+                controller: _scrollController,
+                physics: const ClampingScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 8.0,
+                  crossAxisSpacing: 8.0,
+                ),
+                padding: const EdgeInsets.all(8.0),
+                itemCount: widget.movieList.length,
+                itemBuilder: (context, index) {
+                  final movie = widget.movieList[index];
+                  return MoviePosterWidget(
+                    url: movie.poster ?? '',
+                    movieName: movie.title,
+                    onTap: (movieSelected) {},
+                  );
+                },
+              ),
             ),
-            padding: const EdgeInsets.all(8.0),
-            itemCount: widget.movieList.length,
-            itemBuilder: (context, index) {
-              final movie = widget.movieList[index];
-              return MoviePosterWidget(
-                url: movie.poster ?? '',
-                movieName: movie.title,
-                onTap: (movieSelected) {},
-              );
-            },
-          ),
-        ),
-        if (widget.isLoading)
-          const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: CircularProgressIndicator(),
-          ),
-      ],
+            if (state is GetMoviesLoading)
+              const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Center(child: CircularProgressIndicator()),
+              ),
+          ],
+        );
+      },
     );
   }
 }

@@ -13,20 +13,42 @@ class GetMoviesBloc extends Bloc<GetMoviesEvent, GetMoviesState> {
     required this.index,
   })  : _useCase = useCase,
         super(GetMoviesInitial()) {
-    on<GetMoviesEventLoadingEvent>(_onGetMoviesLoading);
+    on<GetMoviesLoadingEvent>(_onGetMoviesLoading);
+    on<GetMoreMoviesEvent>(_onGetMoreMovies);
   }
 
-  Future<void> _onGetMoviesLoading(GetMoviesEventLoadingEvent event, Emitter<GetMoviesState> emit) async {
+  Future<void> _onGetMoviesLoading(GetMoviesLoadingEvent event, Emitter<GetMoviesState> emit) async {
     List<Movie> movies = [];
-    emit(GetMoviesLoading());
+    emit(GetMoviesLoading(movies: [], currentPage: 1, isLoadingMore: false));
     try {
       movies = await _useCase.getMovies(index);
+      emit(GetMoviesSuccess(movies: movies, currentPage: 1, isLoadingMore: false));
     } catch (e) {
-      emit(GetMoviesError(error: e));
+      emit(GetMoviesError(error: e, movies: [], currentPage: 0, isLoadingMore: false));
     }
+  }
 
-    emit(GetMoviesSuccess(
-      movies: movies,
-    ));
+  Future<void> _onGetMoreMovies(GetMoreMoviesEvent event, Emitter<GetMoviesState> emit) async {
+    if (state is GetMoviesLoading) return;
+    emit(GetMoviesLoading(movies: state.movies, currentPage: state.currentPage, isLoadingMore: true));
+    try {
+      final nextIndex = state.currentPage + 1;
+      final newMovieList = await _useCase.getMovies(nextIndex);
+      if (newMovieList.isEmpty) {
+        emit(GetMoviesSuccess(
+          movies: state.movies,
+          currentPage: state.currentPage,
+          isLoadingMore: false,
+        ));
+        return;
+      }
+      emit(GetMoviesSuccess(
+        movies: [...state.movies, ...newMovieList],
+        currentPage: nextIndex,
+        isLoadingMore: false,
+      ));
+    } catch (e) {
+      emit(GetMoviesError(error: e, movies: [], currentPage: 0, isLoadingMore: false));
+    }
   }
 }

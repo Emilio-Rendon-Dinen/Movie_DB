@@ -14,7 +14,7 @@ class HomeScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => GetMoviesBloc(useCase: getIt.get<GetMoviesByIndexUseCase>(), index: index)
         ..add(
-          const GetMoviesEventLoadingEvent(),
+          const GetMoviesLoadingEvent(),
         ),
       child: Scaffold(
         appBar: AppBar(
@@ -26,16 +26,14 @@ class HomeScreen extends StatelessWidget {
           child: BlocBuilder<GetMoviesBloc, GetMoviesState>(
             builder: (context, state) {
               if (state is GetMoviesLoading) {
-                return const CircularProgressIndicator();
+                return const Center(child: CircularProgressIndicator());
               } else if (state is GetMoviesSuccess) {
                 return MovieListWidget(
                   movieList: state.movies,
-                  isLoading: state is GetMoviesLoading,
+                  isLoadingMore: state.isLoadingMore,
                   onLoadMore: () {
                     index = index + 1;
-                    GetMoviesBloc(useCase: getIt.get<GetMoviesByIndexUseCase>(), index: index).add(
-                      const GetMoviesEventLoadingEvent(),
-                    );
+                    context.read<GetMoviesBloc>().add(const GetMoreMoviesEvent());
                   },
                 );
               } else if (state is GetMoviesError) {

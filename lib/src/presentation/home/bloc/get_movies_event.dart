@@ -4,10 +4,14 @@ sealed class GetMoviesEvent {
   const GetMoviesEvent();
 }
 
-final class GetMoviesEventSucceeded extends GetMoviesEvent {
-  const GetMoviesEventSucceeded();
+final class GetMoviesLoadedEvent extends GetMoviesEvent {
+  const GetMoviesLoadedEvent();
 }
 
-final class GetMoviesEventLoadingEvent extends GetMoviesEvent {
-  const GetMoviesEventLoadingEvent();
+final class GetMoreMoviesEvent extends GetMoviesEvent {
+  const GetMoreMoviesEvent();
+}
+
+final class GetMoviesLoadingEvent extends GetMoviesEvent {
+  const GetMoviesLoadingEvent();
 }
