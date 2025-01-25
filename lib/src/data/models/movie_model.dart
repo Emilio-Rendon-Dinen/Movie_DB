@@ -5,7 +5,7 @@ class MovieModel extends Movie {
   const MovieModel({
     required super.id,
     required super.title,
-    required super.override,
+    required super.overview,
     required super.poster,
   });
 
@@ -15,7 +15,7 @@ class MovieModel extends Movie {
   ) : super(
           id: json.getString('id'),
           title: json.getString('title'),
-          override: json.getString('overview'),
+          overview: json.getString('overview'),
           poster: json.getString('poster_path'),
         );
 
@@ -50,13 +50,3 @@ class MovieModel extends Movie {
     return list;
   }
 }
-
-
-  // static List<MovieModel> parseToList(dynamic json) {
-  //   if (json is Map<String, dynamic> && json['results'] is List) {
-  //     return (json['results'] as List)
-  //         .map((item) => MovieModel.fromJson(item))
-  //         .toList();
-  //   }
-  //   return [];  // Retorna una lista vacía si no se encuentra "results" o no es una lista
-  // }

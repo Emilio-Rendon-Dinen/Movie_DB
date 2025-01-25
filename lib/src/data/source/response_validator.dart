@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:http/http.dart';
 
-class ApiValidator {
-  const ApiValidator();
+class ResponseValidator {
+  const ResponseValidator();
 
   static dynamic validateResponse(Response response) {
     // Verificamos que la respuesta sea válida y que el estado sea 200 (OK)

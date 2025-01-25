@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movie_db/src/core/configuration/navigation/navigation.dart';
 import 'package:movie_db/src/domain/entities/movie.dart';
 import 'package:movie_db/src/presentation/home/bloc/get_movies_bloc.dart';
 import 'package:movie_db/src/presentation/home/widgets/movie_poster_widget.dart';
+import 'package:movie_db/src/presentation/movie_description/movie_description.dart';
 
 class MovieListWidget extends StatefulWidget {
   final List<Movie> movieList;
@@ -83,7 +85,9 @@ class _MovieListWidgetState extends State<MovieListWidget> with AutomaticKeepAli
                   return MoviePosterWidget(
                     url: movie.poster ?? '',
                     movieName: movie.title,
-                    onTap: (movieSelected) {},
+                    onTap: () {
+                      Navigation.push(context: context, screen: const MovieDescription());
+                    },
                   );
                 },
               ),
