@@ -59,8 +59,9 @@ class HttpDataSource {
           break;
       }
 
+      dynamic json = jsonDecode(response.body);
       PrinterService.print('Response status: ${response.statusCode}', tag: 'HttpDataSource');
-      PrinterService.print('Response body: ${jsonEncoder.convert(response.body)}', tag: 'HttpDataSource');
+      PrinterService.print('Response body: ${jsonEncoder.convert(json)}', tag: 'HttpDataSource');
       PrinterService.print('Response reasonPhrase: ${response.reasonPhrase}', tag: 'HttpDataSource');
 
       return ResponseValidator.validateResponse(response);
