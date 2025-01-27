@@ -29,8 +29,11 @@ class GetMoviesBloc extends Bloc<GetMoviesEvent, GetMoviesState> {
   }
 
   Future<void> _onGetMoreMovies(GetMoreMoviesEvent event, Emitter<GetMoviesState> emit) async {
-    if (state is GetMoviesLoading) return;
-    emit(GetMoviesLoading(movies: state.movies, currentPage: state.currentPage, isLoadingMore: true));
+    emit(GetMoviesSuccess(
+      movies: state.movies,
+      currentPage: state.currentPage,
+      isLoadingMore: true,
+    ));
     try {
       final nextIndex = state.currentPage + 1;
       final newMovieList = await _useCase.getMovies(nextIndex);

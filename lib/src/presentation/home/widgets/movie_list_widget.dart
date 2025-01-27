@@ -96,11 +96,13 @@ class _MovieListWidgetState extends State<MovieListWidget> with AutomaticKeepAli
                 },
               ),
             ),
-            if (state is GetMoviesLoading)
-              const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Center(child: CircularProgressIndicator()),
-              ),
+            if (state is GetMoviesSuccess)
+              state.isLoadingMore
+                  ? const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Center(child: CircularProgressIndicator()),
+                    )
+                  : Container(),
           ],
         );
       },
