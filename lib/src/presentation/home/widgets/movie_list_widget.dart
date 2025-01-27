@@ -86,7 +86,11 @@ class _MovieListWidgetState extends State<MovieListWidget> with AutomaticKeepAli
                     url: movie.poster ?? '',
                     movieName: movie.title,
                     onTap: () {
-                      Navigation.push(context: context, screen: const MovieDescription());
+                      Navigation.push(
+                          context: context,
+                          screen: MovieDescription(
+                            id: movie.id,
+                          ));
                     },
                   );
                 },

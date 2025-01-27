@@ -1,4 +1,4 @@
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie_db/src/domain/entities/movie.dart';
 import 'package:movie_db/src/domain/use_cases/get_movies_by_index_use_case.dart';
 

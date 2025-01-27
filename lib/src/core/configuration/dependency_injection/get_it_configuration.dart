@@ -1,7 +1,10 @@
 import 'package:get_it/get_it.dart';
+import 'package:movie_db/src/data/implementations/get_movie_description_by_id_implementation.dart';
 import 'package:movie_db/src/data/implementations/get_movies_by_index_implementation.dart';
 import 'package:movie_db/src/data/source/remote/http_data_source.dart';
+import 'package:movie_db/src/domain/repositories/get_movie_description_by_id_repository.dart';
 import 'package:movie_db/src/domain/repositories/get_movies_by_index_repository.dart';
+import 'package:movie_db/src/domain/use_cases/get_movie_description_by_id_use_case.dart';
 import 'package:movie_db/src/domain/use_cases/get_movies_by_index_use_case.dart';
 part 'get_it_use_case.dart';
 part 'get_it_repository_implementation.dart';
